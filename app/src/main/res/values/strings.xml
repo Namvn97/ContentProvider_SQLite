@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ContentProvider_SQLite</string>
+    <string name="msg_error_call">Do not have permission to call</string>
 </resources>
 
