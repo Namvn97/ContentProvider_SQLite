@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.On
 
     private void initView() {
         RecyclerView recycler = findViewById(R.id.recycler_contacts);
-        mAdapter = new ContactAdapter(this);
+        mAdapter = new ContactAdapter(this );
         mAdapter.setItemClickListener(this);
         DividerItemDecoration decoration =
                 new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);
@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.On
             mAdapter.addContact(new Contact(id, name, phone));
         }
     }
+
 
 
     public static String castString(String... strings) {
