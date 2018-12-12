@@ -21,8 +21,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     private LayoutInflater mInflater;
     private OnClickItemSongListener mContactListener;
 
-    public ContactAdapter(Context context) {
-        this.mContacts = new ArrayList<>();
+    public ContactAdapter(Context context , ArrayList<Contact> contacts) {
+        this.mContacts = contacts;
         mInflater = LayoutInflater.from(context);
     }
 

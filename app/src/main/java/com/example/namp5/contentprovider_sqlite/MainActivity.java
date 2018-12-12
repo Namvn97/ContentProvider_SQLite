@@ -17,13 +17,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements ContactAdapter.OnClickItemSongListener {
     public static final int REQUEST_READ_CONTACTS = 101;
     public static final int REQUEST_CALL_PHONE = 102;
     public static final String STRING_TEL = "tel:";
-    public static final String SORT_ORDER = "DISPLAY_NAME ASC";
     private ContactAdapter mAdapter;
     private String mPhoneNumber;
+    private ArrayList<Contact> mMyContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +36,9 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.On
     }
 
     private void initView() {
+        mMyContacts = new ArrayList<>();
         RecyclerView recycler = findViewById(R.id.recycler_contacts);
-        mAdapter = new ContactAdapter(this);
+        mAdapter = new ContactAdapter(this, mMyContacts);
         mAdapter.setItemClickListener(this);
         DividerItemDecoration decoration =
                 new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);
@@ -43,6 +46,12 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.On
         recycler.setAdapter(mAdapter);
     }
 
+    public void initData() {
+        MyProvider myProvider = new MyProvider(this);
+        mMyContacts.clear();
+        mMyContacts.addAll(myProvider.getContactFormDevice());
+        mAdapter.notifyDataSetChanged();
+    }
     public void showMessage(View view, String message) {
         Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
     }
@@ -58,11 +67,11 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.On
 
     private void doFunction(String permission) {
         switch (permission) {
-            case Manifest.permission.READ_CONTACTS:
-                readContacts();
-                break;
             case Manifest.permission.CALL_PHONE:
                 makeCall(mPhoneNumber);
+                break;
+            case Manifest.permission.READ_CONTACTS:
+                initData();
                 break;
             default:
                 break;
@@ -80,25 +89,6 @@ public class MainActivity extends AppCompatActivity implements ContactAdapter.On
         Intent intent = getCallIntent(phoneNumber);
         startActivity(intent);
     }
-
-    private void readContacts() {
-        Uri contactsTable = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String[] projection = {
-                ContactsContract.CommonDataKinds.Phone._ID,
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER
-        };
-        Cursor cursor = getContentResolver()
-                .query(contactsTable, projection,
-                        null, null, SORT_ORDER);
-        while (cursor.moveToNext()) {
-            String id = cursor.getString(0);
-            String name = cursor.getString(1);
-            String phone = cursor.getString(2);
-            mAdapter.addContact(new Contact(id, name, phone));
-        }
-    }
-
 
     public static String castString(String... strings) {
         StringBuilder builder = new StringBuilder();

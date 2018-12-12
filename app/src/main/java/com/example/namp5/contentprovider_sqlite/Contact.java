@@ -11,6 +11,11 @@ public class Contact {
         mPhone = phone;
     }
 
+    public Contact(String name, String phone) {
+        mName = name;
+        mPhone = phone;
+    }
+
     public String getId() {
         return mId;
     }
